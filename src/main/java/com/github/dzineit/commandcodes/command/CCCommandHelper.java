@@ -8,56 +8,52 @@ import org.bukkit.command.CommandSender;
 
 import com.github.dzineit.commandcodes.CommandCodes;
 
+/**
+ * Helper methods for the execution of commands in the CommandCodes Bukkit
+ * plugin, such as methods for sending command help and plugin information to a
+ * command sender
+ */
 public final class CCCommandHelper {
-	private static final int COMMANDS_PER_PAGE = 7;
-
-	private final List<String> subs;
+	/**
+	 * A list of information to send to a command sender asking for help
+	 */
+	private final List<String> helpInformation;
 
 	public CCCommandHelper(final CommandCodes plugin) {
-		subs = new ArrayList<>();
+		helpInformation = new ArrayList<>();
 	}
 
+	/**
+	 * Registers the given subcommand (with usage parameters) with this helper
+	 * along with the description of what the subcommand's functionality is
+	 * 
+	 * @param subCommand
+	 *            The subcommand to register with this helper. This should
+	 *            include usage, for example "/lol trees <parameterOne>" where
+	 *            <parameterOne> is an argument in the command's syntax
+	 * @param description
+	 *            A short description of what the subcommand in question
+	 *            actually does when it is executed, to be printed to a command
+	 *            sender in the event of them requesting help
+	 */
 	public void registerSubCommand(final String subCommand,
 			final String description) {
-		subs.add(subCommand + " - " + description);
+		helpInformation.add(subCommand + " - " + description);
 	}
 
-	public void sendCommandHelp(final CommandSender sender, final String[] args) {
-		final int numCommands = subs.size();
-		// Work out the number of pages we have
-		final int pages = (int) Math.ceil(numCommands / COMMANDS_PER_PAGE);
-
-		int pageNo = 1;
-
-		// Get the page number from the command arguments
-		if (args != null && args.length > 0) {
-			try {
-				pageNo = Integer.parseInt(args[0]);
-				if (pageNo > pages || pageNo < 0) {
-					sender.sendMessage(ChatColor.DARK_RED
-							+ "Invalid page number: " + args[0]);
-				}
-			} catch (final NumberFormatException e) {
-				sender.sendMessage(ChatColor.DARK_RED + "Invalid page number: "
-						+ args[0]);
-			}
-		}
-
-		if (pages > 1) {
-			sender.sendMessage(ChatColor.GRAY
-					+ "== CommandCodes Commands - Page " + pageNo + "/" + pages
-					+ " ==");
-		} else {
-			sender.sendMessage(ChatColor.GRAY + "== CommandCodes Commands ==");
-		}
-
-		final int startPoint = COMMANDS_PER_PAGE * (pageNo - 1);
-		for (int cur = startPoint; cur < startPoint + 7; cur++) {
-			sender.sendMessage(ChatColor.GRAY + "/ccode " + subs.get(cur));
+	/**
+	 * Sends help to the given CommandSender object
+	 * 
+	 * @param sender
+	 *            The CommandSender object to send the help to
+	 */
+	public void sendCommandHelp(final CommandSender sender) {
+		for (final String information : helpInformation) {
+			sender.sendMessage(ChatColor.GRAY + information);
 		}
 	}
 
-	public void sendCommandInfo(final CommandSender sender) {
-		// TODO
+	public void sendPluginInfo(final CommandSender sender) {
+		// TODO: Send plugin information to the given sender
 	}
 }

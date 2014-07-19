@@ -4,16 +4,38 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import com.github.dzineit.commandcodes.CommandCodes;
 import com.github.dzineit.commandcodes.code.CodeManager;
+import com.github.dzineit.commandcodes.code.CommandCode;
 import com.github.dzineit.commandcodes.command.CCCommandHelper;
 
+/**
+ * The CommandExecutor implementation which handles the CommandCodes command
+ * 'ccode'. This command's functions are related to creating, removing,
+ * redeeming and viewing (present and past, in the case of viewing) command
+ * codes
+ */
 public final class CCodeCommand implements CommandExecutor {
+	/**
+	 * The plugin code manager
+	 */
 	private final CodeManager codeMgr;
+	/**
+	 * The plugin command helper
+	 */
 	private final CCCommandHelper helper;
 
+	/**
+	 * Creates a new command handler for CommandCodes' 'ccode' command
+	 * 
+	 * @param plugin
+	 *            The CommandCodes plugin object this command executor is acting
+	 *            for
+	 */
 	public CCodeCommand(final CommandCodes plugin) {
+		// Get required objects from the provided plugin object
 		codeMgr = plugin.getCodeManager();
 		helper = plugin.getCommandHelper();
 
@@ -33,59 +55,121 @@ public final class CCodeCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command cmd,
 			final String label, final String[] args) {
-		final String cn = cmd.getName().toLowerCase();
-
-		if (cn.equals("ccode")) {
+		if (cmd.getName().equalsIgnoreCase("ccode")) { // Literally the only time this method should be called
 			if (args.length == 0) {
-				helper.sendCommandHelp(sender, args);
+				helper.sendCommandHelp(sender);
 			} else {
 				final String sub = args[0].toLowerCase();
 
 				if (sub.equals("generate") || sub.equals("create")) {
-					if (args.length == 1) {
+					if (!(sender.hasPermission("commandcodes.generate") || sender instanceof ConsoleCommandSender)) {
 						sender.sendMessage(ChatColor.DARK_RED
-								+ "Invalid syntax, /ccode generate <amount> <command>");
+								+ "You don't have permission to do that!");
 					} else {
-						// TODO
+						if (args.length < 3) {
+							sender.sendMessage(ChatColor.DARK_RED
+									+ "Invalid syntax, /ccode generate <amount> <command>");
+						} else {
+							boolean ia = false; // Invalid amount
+							int amount = -1;
+
+							try {
+								amount = Integer.parseInt(args[1]);
+							} catch (NumberFormatException e) {
+								ia = true;
+							}
+
+							if (amount < 1) {
+								ia = true;
+							}
+
+							if (ia) {
+								sender.sendMessage(ChatColor.DARK_RED
+										+ "Invalid amount entered, /ccode generate <amount> <command>");
+							} else {
+								final StringBuilder builder = new StringBuilder();
+								for (int cur = 2; cur < args.length; cur++) {
+									builder.append(args[cur]).append(" ");
+								}
+
+								final CommandCode code = codeMgr.generateCode(
+										builder.toString(), amount);
+
+								if (code != null) {
+									sender.sendMessage(ChatColor.GRAY
+											+ "Successfully created command code which can be used "
+											+ code.getAmount()
+											+ " times, linked to the command: '"
+											+ code.getCommand() + "'");
+								} else {
+									sender.sendMessage(ChatColor.DARK_RED
+											+ "Failed to create code!");
+								}
+							}
+						}
 					}
 				} else if (sub.equals("remove") || sub.equals("delete")) {
-					if (args.length == 1) {
+					if (!(sender.hasPermission("commandcodes.remove") || sender instanceof ConsoleCommandSender)) {
 						sender.sendMessage(ChatColor.DARK_RED
-								+ "Invalid syntax, /ccode remove <code>");
+								+ "You don't have permission to do that!");
 					} else {
-						// TODO
+						if (args.length == 1) {
+							sender.sendMessage(ChatColor.DARK_RED
+									+ "Invalid syntax, /ccode remove <code>");
+						} else {
+							// TODO
+						}
 					}
 				} else if (sub.equals("redeem") || sub.equals("activate")) {
-					if (args.length == 1) {
+					if (!(sender.hasPermission("commandcodes.redeem") || sender instanceof ConsoleCommandSender)) {
 						sender.sendMessage(ChatColor.DARK_RED
-								+ "Invalid syntax, /ccode redeem <code>");
+								+ "You don't have permission to do that!");
 					} else {
-						// TODO
+						if (args.length == 1) {
+							sender.sendMessage(ChatColor.DARK_RED
+									+ "Invalid syntax, /ccode redeem <code>");
+						} else {
+							// TODO
+						}
 					}
 				} else if (sub.equals("view") || sub.equals("see")) {
-					if (args.length > 1) {
-						try {
-							Integer.parseInt(args[1]);
-						} catch (final NumberFormatException e) {
-							sender.sendMessage(ChatColor.DARK_RED
-									+ "Invalid page number: " + args[1]);
-							return true;
-						}
-					}
+					if (!(sender.hasPermission("commandcodes.view") || sender instanceof ConsoleCommandSender)) {
+						sender.sendMessage(ChatColor.DARK_RED
+								+ "You don't have permission to do that!");
+					} else {
+						int pageNo = 1;
 
-					// TODO
+						if (args.length > 1) {
+							try {
+								pageNo = Integer.parseInt(args[1]);
+							} catch (final NumberFormatException e) {
+								sender.sendMessage(ChatColor.DARK_RED
+										+ "Invalid page number: " + args[1]);
+								return true;
+							}
+						}
+
+						// TODO
+					}
 				} else if (sub.equals("previous") || sub.equals("seeprev")) {
-					if (args.length > 1) {
-						try {
-							Integer.parseInt(args[1]);
-						} catch (final NumberFormatException e) {
-							sender.sendMessage(ChatColor.DARK_RED
-									+ "Invalid page number: " + args[1]);
-							return true;
-						}
-					}
+					if (!(sender.hasPermission("commandcodes.previous") || sender instanceof ConsoleCommandSender)) {
+						sender.sendMessage(ChatColor.DARK_RED
+								+ "You don't have permission to do that!");
+					} else {
+						int pageNo = 1;
 
-					// TODO
+						if (args.length > 1) {
+							try {
+								pageNo = Integer.parseInt(args[1]);
+							} catch (final NumberFormatException e) {
+								sender.sendMessage(ChatColor.DARK_RED
+										+ "Invalid page number: " + args[1]);
+								return true;
+							}
+						}
+
+						// TODO
+					}
 				}
 			}
 		}
