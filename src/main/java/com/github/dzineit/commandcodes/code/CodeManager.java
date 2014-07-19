@@ -165,10 +165,6 @@ public class CodeManager {
 
 		for (final String key : keys) {
 			try {
-				if (sec.getString(key).equals("__________")) {
-					continue;
-				}
-
 				final int code = Integer.parseInt(key);
 				final String[] split = sec.getString(key).split("::");
 				currentCodes.add(new CommandCode(code, split[0], Integer
@@ -225,9 +221,7 @@ public class CodeManager {
 
 		for (final String key : sec.getKeys(false)) {
 			if (!codes.contains(key)) {
-				// Does null remove the key or just literally set it to 'null'?
-				// If it removes the key this can just be changed to null
-				sec.set(key, "__________");
+				sec.set(key, null);
 			}
 		}
 
