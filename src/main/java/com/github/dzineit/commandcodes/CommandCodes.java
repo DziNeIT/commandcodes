@@ -10,6 +10,8 @@ import com.github.dzineit.commandcodes.code.CodeManager;
 import com.github.dzineit.commandcodes.command.CCCommandHelper;
 import com.github.dzineit.commandcodes.command.commands.CCodeCommand;
 import com.github.dzineit.commandcodes.command.commands.CommandCodesCommand;
+import com.github.dzineit.commandcodes.storage.FileManager;
+import com.github.dzineit.commandcodes.storage.StorageException;
 
 /**
  * The main class for the CommandCodes plugin for Bukkit, which allows the
@@ -24,17 +26,13 @@ public final class CommandCodes extends JavaPlugin {
 	 */
 	private CodeManager codeManager;
 	/**
-	 * The yaml configuration for the plugin
-	 */
-	private YamlConfiguration config;
-	/**
-	 * The yaml configuration for storing command codes
-	 */
-	private YamlConfiguration codeConfiguration;
-	/**
 	 * The CommandHelper object, containing helpful methods for command parsing
 	 */
 	private CCCommandHelper cmdHelper;
+	/**
+	 * The FileManager object, which manages all of the files for the plugin
+	 */
+	private FileManager fileManager;
 
 	@Override
 	public void onEnable() {
@@ -61,13 +59,17 @@ public final class CommandCodes extends JavaPlugin {
 			}
 		}
 
-		// Load yaml configurations
-		config = YamlConfiguration.loadConfiguration(configFile);
-		codeConfiguration = YamlConfiguration.loadConfiguration(codesFile);
+		// Load files / config
+		fileManager = new FileManager(this);
 
 		// Load the command manager and the saved command codes
-		codeManager = new CodeManager(config.getInt("code-cap", 9999));
-		codeManager.loadCodes(codeConfiguration);
+		codeManager = new CodeManager(this);
+
+		try {
+			codeManager.loadCodes();
+		} catch (StorageException e) {
+			e.printStackTrace();
+		}
 
 		// Create the command helper
 		cmdHelper = new CCCommandHelper(this);
@@ -83,7 +85,11 @@ public final class CommandCodes extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		// Save the command codes to a YML file
-		codeManager.saveCodes(codeConfiguration);
+		try {
+			codeManager.saveCodes();
+		} catch (StorageException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -105,5 +111,16 @@ public final class CommandCodes extends JavaPlugin {
 	 */
 	public CCCommandHelper getCommandHelper() {
 		return cmdHelper;
+	}
+
+	/**
+	 * Gets the FileManager object for the plugin, which handles all management
+	 * of files in CommandCodes, such as the configuration file as well as other
+	 * files
+	 * 
+	 * @return The plugin's FileManager object
+	 */
+	public FileManager getFileManager() {
+		return fileManager;
 	}
 }
