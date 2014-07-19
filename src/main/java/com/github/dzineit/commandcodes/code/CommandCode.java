@@ -1,21 +1,25 @@
 package com.github.dzineit.commandcodes.code;
 
+import java.util.List;
+
 public final class CommandCode {
 	private final int code;
 	private final String command;
+	private final int amount;
 
-	private String redeemer;
+	private List<String> redeemers;
 
-	public CommandCode(final int code, final String command) {
+	public CommandCode(final int code, final String command, final int amount) {
 		this.code = code;
 		this.command = command;
+		this.amount = amount;
 	}
 
-	public CommandCode(final int code, final String command,
-			final String redeemer) {
-		this(code, command);
+	public CommandCode(final int code, final String command, final int amount,
+			final List<String> redeemers) {
+		this(code, command, amount);
 
-		this.redeemer = redeemer;
+		this.redeemers = redeemers;
 	}
 
 	public int getCode() {
@@ -26,11 +30,19 @@ public final class CommandCode {
 		return command;
 	}
 
-	public String getRedeemer() {
-		return redeemer;
+	public int getAmount() {
+		return amount;
 	}
 
-	public void setRedeemer(String redeemer) {
-		this.redeemer = redeemer;
+	public List<String> getRedeemers() {
+		return redeemers;
+	}
+
+	public void setRedeemers(final List<String> redeemers) {
+		this.redeemers = redeemers;
+	}
+
+	public boolean isUsed() {
+		return redeemers.size() >= amount;
 	}
 }

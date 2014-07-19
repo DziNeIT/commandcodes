@@ -14,16 +14,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * CommandCodes are designed to link a one-time-use code to a command, which
  * could allow a user to perform a command they couldn't normally execute or
  * something similar
+ * 
+ * TODO: My code for storing codes is godawful
  */
 public class CodeManager {
 	/**
 	 * A list of currently active command codes
 	 */
-	private List<CommandCode> currentCodes;
+	private final List<CommandCode> currentCodes;
 	/**
 	 * A list of already used command codes
 	 */
-	private List<CommandCode> oldCodes;
+	private final List<CommandCode> oldCodes;
 	/**
 	 * The instance of Random being used for code generation
 	 */
@@ -51,7 +53,7 @@ public class CodeManager {
 	 * 
 	 * TODO: Create a more efficient storage mechanism (than YAML)
 	 */
-	public void loadCodes(YamlConfiguration conf) {
+	public void loadCodes(final YamlConfiguration conf) {
 		ConfigurationSection sec = conf.getConfigurationSection("current");
 		if (sec == null) {
 			sec = conf.createSection("current");
@@ -65,9 +67,11 @@ public class CodeManager {
 					continue;
 				}
 
-				currentCodes.add(new CommandCode(Integer.parseInt(key), sec
-						.getString(key)));
-			} catch (NumberFormatException e) {
+				final int code = Integer.parseInt(key);
+				final String[] split = sec.getString(key).split("::");
+				currentCodes.add(new CommandCode(code, split[0], Integer
+						.parseInt(split[1])));
+			} catch (final NumberFormatException e) {
 				continue;
 			}
 		}
@@ -83,8 +87,15 @@ public class CodeManager {
 			try {
 				final int code = Integer.parseInt(key);
 				final String[] split = sec.getString(key).split("::");
+				final String command = split[0];
+				final int amount = Integer.parseInt(split[1]);
+				final List<String> redeemers = new ArrayList<>();
 
-				oldCodes.add(new CommandCode(code, split[0], split[1]));
+				for (int i = 2; i < split.length; i++) {
+					redeemers.add(split[i]);
+				}
+
+				oldCodes.add(new CommandCode(code, command, amount, redeemers));
 			} catch (NumberFormatException | ArrayIndexOutOfBoundsException nobodyCares) {
 				continue;
 			}
@@ -97,7 +108,7 @@ public class CodeManager {
 	 * 
 	 * TODO: Create a more efficient storage mechanism (than YAML)
 	 */
-	public void saveCodes(YamlConfiguration conf) {
+	public void saveCodes(final YamlConfiguration conf) {
 		ConfigurationSection sec = conf.getConfigurationSection("current");
 		if (sec == null) {
 			sec = conf.createSection("current");
@@ -107,7 +118,8 @@ public class CodeManager {
 		for (final CommandCode cc : currentCodes) {
 			codes.add(String.valueOf(cc.getCode()));
 
-			sec.set(String.valueOf(cc.getCode()), cc.getCommand());
+			sec.set(String.valueOf(cc.getCode()),
+					cc.getCommand() + "::" + cc.getAmount());
 		}
 
 		for (final String key : sec.getKeys(false)) {
@@ -122,7 +134,9 @@ public class CodeManager {
 		}
 
 		for (final CommandCode cc : oldCodes) {
-			sec.set(String.valueOf(cc.getCode()), cc.getCommand());
+			sec.set(String.valueOf(cc.getCode()),
+					cc.getCommand() + "::" + cc.getAmount() + "::"
+							+ listToString(cc.getRedeemers(), "::"));
 		}
 	}
 
@@ -134,14 +148,14 @@ public class CodeManager {
 	 *            The command to generate a CommandCode for
 	 * @return A CommandCode generated for the given command
 	 */
-	public CommandCode generateCode(String command) {
+	public CommandCode generateCode(final String command, final int amount) {
 		int code;
 		do {
 			// Continually assign it a new value until its value isn't already taken
 			code = random.nextInt(codeCap);
 		} while (isInUse(code));
 
-		CommandCode cc = new CommandCode(code, command);
+		final CommandCode cc = new CommandCode(code, command, amount);
 		currentCodes.add(cc);
 		return cc;
 	}
@@ -154,8 +168,8 @@ public class CodeManager {
 	 *            The code to get the CommandCode for
 	 * @return The CommandCode associated with the given code
 	 */
-	public CommandCode getCommandCode(int code) {
-		for (CommandCode cc : currentCodes) {
+	public CommandCode getCommandCode(final int code) {
+		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
 				return cc;
 			}
@@ -175,8 +189,8 @@ public class CodeManager {
 	 * @return The command associated with the given code, or null if there
 	 *         isn't one
 	 */
-	public String redeemed(int code) {
-		for (CommandCode cc : currentCodes) {
+	public String redeemed(final int code) {
+		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
 				currentCodes.remove(cc);
 				oldCodes.add(cc);
@@ -193,8 +207,8 @@ public class CodeManager {
 	 *            The code to check for usage of
 	 * @return Whether the given code is currently being used
 	 */
-	public boolean isInUse(int code) {
-		for (CommandCode cc : currentCodes) {
+	public boolean isInUse(final int code) {
+		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
 				return true;
 			}
@@ -226,7 +240,17 @@ public class CodeManager {
 	 * @param codeCap
 	 *            The new cap for generated command code numbers
 	 */
-	public void setCodeCap(int codeCap) {
+	public void setCodeCap(final int codeCap) {
 		this.codeCap = codeCap;
+	}
+
+	private String listToString(final List<String> stringList,
+			final String separator) {
+		final StringBuilder builder = new StringBuilder();
+		for (final String curString : stringList) {
+			builder.append(curString).append(separator);
+		}
+		builder.setLength(builder.length() - separator.length());
+		return builder.toString();
 	}
 }

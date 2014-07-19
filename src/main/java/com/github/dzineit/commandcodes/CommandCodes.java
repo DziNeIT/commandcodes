@@ -7,6 +7,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.dzineit.commandcodes.code.CodeManager;
+import com.github.dzineit.commandcodes.command.CCCommandHelper;
+import com.github.dzineit.commandcodes.command.commands.CCodeCommand;
+import com.github.dzineit.commandcodes.command.commands.CommandCodesCommand;
 
 /**
  * The main class for the CommandCodes plugin for Bukkit, which allows the
@@ -28,27 +31,32 @@ public final class CommandCodes extends JavaPlugin {
 	 * The yaml configuration for storing command codes
 	 */
 	private YamlConfiguration codeConfiguration;
+	/**
+	 * The CommandHelper object, containing helpful methods for command parsing
+	 */
+	private CCCommandHelper cmdHelper;
 
 	@Override
 	public void onEnable() {
-		File configFile = new File(getDataFolder(), "config.yml");
-		File codesFile = new File(getDataFolder(), "codes.yml");
+		// Create the objects for the config and codes storage files
+		final File configFile = new File(getDataFolder(), "config.yml");
+		final File codesFile = new File(getDataFolder(), "codes.yml");
 
-		// Make sure the config file and its directory exist
+		// Make sure all files and directories exist
 		if (!getDataFolder().exists()) {
 			getDataFolder().mkdirs();
 		}
 		if (!configFile.exists()) {
 			try {
 				configFile.createNewFile();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
 		if (!codesFile.exists()) {
 			try {
 				codesFile.createNewFile();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -57,17 +65,24 @@ public final class CommandCodes extends JavaPlugin {
 		config = YamlConfiguration.loadConfiguration(configFile);
 		codeConfiguration = YamlConfiguration.loadConfiguration(codesFile);
 
-		// Register the plugin's commands
-		final CommandCodesCommandExecutor executor = new CommandCodesCommandExecutor(
-				this);
-		getCommand("ccode").setExecutor(executor);
-
+		// Load the command manager and the saved command codes
 		codeManager = new CodeManager(config.getInt("code-cap", 9999));
 		codeManager.loadCodes(codeConfiguration);
+
+		// Create the command helper
+		cmdHelper = new CCCommandHelper(this);
+
+		// Register the plugin's commands
+		final CCodeCommand execMain = new CCodeCommand(this);
+		final CommandCodesCommand execInfo = new CommandCodesCommand(this);
+
+		getCommand("ccode").setExecutor(execMain);
+		getCommand("commandcodes").setExecutor(execInfo);
 	}
 
 	@Override
 	public void onDisable() {
+		// Save the command codes to a YML file
 		codeManager.saveCodes(codeConfiguration);
 	}
 
@@ -80,5 +95,15 @@ public final class CommandCodes extends JavaPlugin {
 	 */
 	public CodeManager getCodeManager() {
 		return codeManager;
+	}
+
+	/**
+	 * Gets the CommandHelper object for the plugin, which contains helpful
+	 * utility methods for the handling of commands for CommandCodes
+	 * 
+	 * @return The plugin's CommandHelper object
+	 */
+	public CCCommandHelper getCommandHelper() {
+		return cmdHelper;
 	}
 }

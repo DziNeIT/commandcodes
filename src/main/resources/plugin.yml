@@ -10,3 +10,29 @@ description: Allows the generation of one-time-use codes for running a command w
 commands:
     ccode:
         aliases: [cc, ccc]
+    commandcodes:
+        description: Help and information for CommandCodes
+
+permissions:
+    commandcodes.generate:
+        description: Allows command code generation
+    commandcodes.remove:
+        description: Allows command code removal
+    commandcodes.view:
+        description: Allows viewing current codes
+    commandcodes.previous:
+        description: Allows viewing previous codes
+    commandcodes.redeem:
+        description: Allows redeeming command codes
+    commandcodes.admin:
+        children:
+            - commandcodes.generate:true
+            - commandcodes.remove:true
+    commandcodes.*:
+        children:
+            - commandcodes.generate:true
+            - commandcodes.remove:true
+            - commandcodes.admin:true
+            - commandcodes.redeem:true
+            - commandcodes.view:true
+            - commandcodes.previous:true
