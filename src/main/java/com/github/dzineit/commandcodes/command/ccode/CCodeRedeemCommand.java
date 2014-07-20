@@ -78,7 +78,7 @@ public final class CCodeRedeemCommand extends CCodeSubCommand {
 	 */
 	@Override
 	public String[] getNames() {
-		return null;
+		return new String[] { "redeem", "activate" };
 	}
 
 	/**
