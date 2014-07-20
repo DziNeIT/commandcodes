@@ -1,6 +1,10 @@
 package com.github.dzineit.commandcodes.command.commands;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -135,7 +139,7 @@ public final class CCodeCommand implements CommandExecutor {
 
 							if (code != 10000000) {
 								final CommandCode cc = codeMgr
-										.getCommandCode(code);
+										.getCurrentCommandCode(code);
 
 								if (cc == null) {
 									sender.sendMessage(ChatColor.DARK_RED
@@ -201,38 +205,49 @@ public final class CCodeCommand implements CommandExecutor {
 						sender.sendMessage(ChatColor.DARK_RED
 								+ "You don't have permission to do that!");
 					} else {
-						int pageNo = 1;
-
-						if (args.length > 1) {
-							try {
-								pageNo = Integer.parseInt(args[1]);
-							} catch (final NumberFormatException e) {
-								sender.sendMessage(ChatColor.DARK_RED
-										+ "Invalid page number: " + args[1]);
-								return true;
-							}
-						}
-
-						// TODO
+						return display(sender, codeMgr.getAvailableCodes(),
+								args);
 					}
 				} else if (sub.equals("previous") || sub.equals("seeprev")) {
 					if (!(sender.hasPermission("commandcodes.previous") || sender instanceof ConsoleCommandSender)) {
 						sender.sendMessage(ChatColor.DARK_RED
 								+ "You don't have permission to do that!");
 					} else {
-						int pageNo = 1;
-
-						if (args.length > 1) {
+						return display(sender, codeMgr.getPreviousCodes(), args);
+					}
+				} else if (sub.equals("show") || sub.equals("info")) {
+					if (!(sender.hasPermission("commandcodes.view") || sender instanceof ConsoleCommandSender)) {
+						sender.sendMessage(ChatColor.DARK_RED
+								+ "You don't have permission to do that!");
+					} else {
+						if (args.length == 1) {
+							sender.sendMessage(ChatColor.DARK_RED
+									+ "Invalid syntax, /ccode show <code>");
+						} else {
+							int code;
 							try {
-								pageNo = Integer.parseInt(args[1]);
-							} catch (final NumberFormatException e) {
+								code = Integer.parseInt(args[1]);
+							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.DARK_RED
-										+ "Invalid page number: " + args[1]);
-								return true;
+										+ "Invalid code number, /ccode show <code>");
+								code = 1000000;
+							}
+
+							if (code != 1000000) {
+								CommandCode cc = codeMgr
+										.getCurrentCommandCode(code);
+								if (cc == null) {
+									cc = codeMgr.getSpentCommandCode(code);
+								}
+
+								if (cc == null) {
+									sender.sendMessage(ChatColor.DARK_RED
+											+ "That code doesn't exist!");
+								} else {
+									showCommandCodeData(sender, cc);
+								}
 							}
 						}
-
-						// TODO
 					}
 				}
 			}
@@ -240,4 +255,75 @@ public final class CCodeCommand implements CommandExecutor {
 
 		return true;
 	}
+
+	private boolean display(final CommandSender sender,
+			final List<CommandCode> list, final String[] args) {
+		final int amount = list.size();
+		final int pages = (int) Math.ceil(amount / CODES_PER_PAGE);
+
+		int pageNo = 1;
+		if (args.length > 1) {
+			try {
+				pageNo = Integer.parseInt(args[1]);
+			} catch (final NumberFormatException e) {
+				sender.sendMessage(ChatColor.DARK_RED + "Invalid page number: "
+						+ args[1]);
+				return true;
+			}
+
+			if (pageNo > pages) {
+				sender.sendMessage(ChatColor.DARK_RED
+						+ "There aren't that many pages!");
+				return true;
+			}
+		}
+
+		sender.sendMessage(ChatColor.GRAY + "[Codes"
+				+ (pageNo > 1 ? " " + pageNo + "/" + pages : "") + "]");
+
+		final int start = CODES_PER_PAGE * (pageNo - 1);
+		final int end = start + 7;
+
+		for (int cur = start; cur < end; cur++) {
+			final CommandCode cc = list.get(cur);
+			final StringBuilder builder = new StringBuilder();
+
+			sender.sendMessage(builder.append(ChatColor.GOLD).append(cur)
+					.append(": Code=").append(cc.getCode())
+					.append(", Command=").toString());
+		}
+
+		return true;
+	}
+
+	private boolean showCommandCodeData(final CommandSender sender,
+			final CommandCode cc) {
+		final StringBuilder builder = new StringBuilder();
+
+		sender.sendMessage(builder.append(ChatColor.GOLD).append(": Code=")
+				.append(cc.getCode()).append(", Command=")
+				.append(cc.getCommand()).append(", Uses=")
+				.append(cc.getAmount()).append(", Remaining=")
+				.append(cc.getAmount() - cc.getRedeemers().size())
+				.append(", Redeemers=")
+				.append(getPlayersStr(cc.getRedeemers())).toString());
+
+		return true;
+	}
+
+	private String getPlayersStr(final List<UUID> uuids) {
+		final StringBuilder builder = new StringBuilder();
+		for (final UUID currentUuid : uuids) {
+			final OfflinePlayer player = plugin.getServer().getOfflinePlayer(
+					currentUuid);
+			builder.append(player.getName()).append(" ");
+		}
+		builder.setLength(builder.length() - 1);
+		return builder.toString();
+	}
+
+	/**
+	 * The amount of codes to show on each page
+	 */
+	private static final int CODES_PER_PAGE = 6;
 }

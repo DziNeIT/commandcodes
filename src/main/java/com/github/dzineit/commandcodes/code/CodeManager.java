@@ -86,8 +86,25 @@ public class CodeManager {
 	 *            The code to get the CommandCode for
 	 * @return The CommandCode associated with the given code
 	 */
-	public CommandCode getCommandCode(final int code) {
+	public CommandCode getCurrentCommandCode(final int code) {
 		for (final CommandCode cc : currentCodes) {
+			if (cc.getCode() == code) {
+				return cc;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Checks for the existence of the given old code, returing it's CommandCode
+	 * object if it exists, or null otherwise
+	 * 
+	 * @param code
+	 *            The code to get the CommandCode for
+	 * @return The CommandCode associated with the given code
+	 */
+	public CommandCode getSpentCommandCode(final int code) {
+		for (final CommandCode cc : oldCodes) {
 			if (cc.getCode() == code) {
 				return cc;
 			}
