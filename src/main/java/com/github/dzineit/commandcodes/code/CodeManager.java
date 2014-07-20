@@ -34,7 +34,7 @@ public class CodeManager {
 	/**
 	 * The instance of Random being used for code generation
 	 */
-	private Random random;
+	private Random random = new Random();
 	/**
 	 * The cap on numbers generated for command codes
 	 */
