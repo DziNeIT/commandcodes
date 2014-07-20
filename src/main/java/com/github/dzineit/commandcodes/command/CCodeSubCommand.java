@@ -53,4 +53,11 @@ public abstract class CCodeSubCommand {
 	 * @return A brief description of this command's functionality
 	 */
 	public abstract String getDescription();
+
+	/**
+	 * Gets the permission required to execute this subcommand of 'ccode'
+	 * 
+	 * @return The permission required for this command
+	 */
+	public abstract String getPermission();
 }

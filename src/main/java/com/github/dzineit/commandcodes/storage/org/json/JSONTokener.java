@@ -446,7 +446,7 @@ public class JSONTokener {
 	 */
 	@Override
 	public String toString() {
-		return " at " + index + " [character " + character + " line "
-				+ line + "]";
+		return " at " + index + " [character " + character + " line " + line
+				+ "]";
 	}
 }

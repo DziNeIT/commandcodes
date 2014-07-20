@@ -22,6 +22,8 @@ permissions:
         description: Allows viewing previous codes
     commandcodes.redeem:
         description: Allows redeeming command codes
+    commandcodes.show:
+        description: Allows viewing details of a command code
     commandcodes.admin:
         children:
             - commandcodes.generate:true
@@ -34,3 +36,4 @@ permissions:
             - commandcodes.redeem:true
             - commandcodes.view:true
             - commandcodes.previous:true
+            - commandcodes.show:true

@@ -1,8 +1,6 @@
 package com.github.dzineit.commandcodes.command.ccode;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 
 import com.github.dzineit.commandcodes.CommandCodes;
 import com.github.dzineit.commandcodes.code.CodeManager;
@@ -26,13 +24,7 @@ public final class CCodeViewCommand extends CCodeSubCommand {
 	 */
 	@Override
 	public void execute(final CommandSender sender, final String[] args) {
-		if (!(sender.hasPermission("commandcodes.view") || sender instanceof ConsoleCommandSender)) {
-			sender.sendMessage(ChatColor.DARK_RED
-					+ "You don't have permission to do that!");
-		} else {
-			CommandUtil.displayCodeList(sender, codeMgr.getAvailableCodes(),
-					args);
-		}
+		CommandUtil.displayCodeList(sender, codeMgr.getAvailableCodes(), args);
 	}
 
 	/**
@@ -57,5 +49,13 @@ public final class CCodeViewCommand extends CCodeSubCommand {
 	@Override
 	public String getDescription() {
 		return "Shows a list of current codes at the given page";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getPermission() {
+		return "commandcodes.view";
 	}
 }

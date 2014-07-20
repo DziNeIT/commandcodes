@@ -279,8 +279,7 @@ public class JSONWriter {
 			throw new JSONException("Nesting error.");
 		}
 		top -= 1;
-		mode = top == 0 ? 'd'
-				: stack[top - 1] == null ? 'a' : 'k';
+		mode = top == 0 ? 'd' : stack[top - 1] == null ? 'a' : 'k';
 	}
 
 	/**

@@ -331,10 +331,11 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If any JSONExceptions are detected.
 	 */
-	public JSONObject(final String baseName, final Locale locale) throws JSONException {
+	public JSONObject(final String baseName, final Locale locale)
+			throws JSONException {
 		this();
-		final ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale,
-				Thread.currentThread().getContextClassLoader());
+		final ResourceBundle bundle = ResourceBundle.getBundle(baseName,
+				locale, Thread.currentThread().getContextClassLoader());
 
 // Iterate through the keys in the bundle.
 
@@ -383,7 +384,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the value is an invalid number or if the key is null.
 	 */
-	public JSONObject accumulate(final String key, final Object value) throws JSONException {
+	public JSONObject accumulate(final String key, final Object value)
+			throws JSONException {
 		testValidity(value);
 		final Object object = opt(key);
 		if (object == null) {
@@ -413,7 +415,8 @@ public class JSONObject {
 	 *             If the key is null or if the current value associated with
 	 *             the key is not a JSONArray.
 	 */
-	public JSONObject append(final String key, final Object value) throws JSONException {
+	public JSONObject append(final String key, final Object value)
+			throws JSONException {
 		testValidity(value);
 		final Object object = opt(key);
 		if (object == null) {
@@ -487,13 +490,11 @@ public class JSONObject {
 	 */
 	public boolean getBoolean(final String key) throws JSONException {
 		final Object object = get(key);
-		if (object.equals(Boolean.FALSE)
-				|| object instanceof String && ((String) object)
-						.equalsIgnoreCase("false")) {
+		if (object.equals(Boolean.FALSE) || object instanceof String
+				&& ((String) object).equalsIgnoreCase("false")) {
 			return false;
-		} else if (object.equals(Boolean.TRUE)
-				|| object instanceof String && ((String) object)
-						.equalsIgnoreCase("true")) {
+		} else if (object.equals(Boolean.TRUE) || object instanceof String
+				&& ((String) object).equalsIgnoreCase("true")) {
 			return true;
 		}
 		throw new JSONException("JSONObject[" + quote(key)
@@ -764,7 +765,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If n is a non-finite number.
 	 */
-	public static String numberToString(final Number number) throws JSONException {
+	public static String numberToString(final Number number)
+			throws JSONException {
 		if (number == null) {
 			throw new JSONException("Null pointer");
 		}
@@ -1011,7 +1013,8 @@ public class JSONObject {
 									+ key.substring(1);
 						}
 
-						final Object result = method.invoke(bean, (Object[]) null);
+						final Object result = method.invoke(bean,
+								(Object[]) null);
 						if (result != null) {
 							map.put(key, wrap(result));
 						}
@@ -1033,7 +1036,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the key is null.
 	 */
-	public JSONObject put(final String key, final boolean value) throws JSONException {
+	public JSONObject put(final String key, final boolean value)
+			throws JSONException {
 		this.put(key, value ? Boolean.TRUE : Boolean.FALSE);
 		return this;
 	}
@@ -1066,7 +1070,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the key is null or if the number is invalid.
 	 */
-	public JSONObject put(final String key, final double value) throws JSONException {
+	public JSONObject put(final String key, final double value)
+			throws JSONException {
 		this.put(key, new Double(value));
 		return this;
 	}
@@ -1082,7 +1087,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the key is null.
 	 */
-	public JSONObject put(final String key, final int value) throws JSONException {
+	public JSONObject put(final String key, final int value)
+			throws JSONException {
 		this.put(key, new Integer(value));
 		return this;
 	}
@@ -1098,7 +1104,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the key is null.
 	 */
-	public JSONObject put(final String key, final long value) throws JSONException {
+	public JSONObject put(final String key, final long value)
+			throws JSONException {
 		this.put(key, new Long(value));
 		return this;
 	}
@@ -1134,7 +1141,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the value is non-finite number or if the key is null.
 	 */
-	public JSONObject put(final String key, final Object value) throws JSONException {
+	public JSONObject put(final String key, final Object value)
+			throws JSONException {
 		if (key == null) {
 			throw new NullPointerException("Null key.");
 		}
@@ -1160,7 +1168,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             if the key is a duplicate
 	 */
-	public JSONObject putOnce(final String key, final Object value) throws JSONException {
+	public JSONObject putOnce(final String key, final Object value)
+			throws JSONException {
 		if (key != null && value != null) {
 			if (opt(key) != null) {
 				throw new JSONException("Duplicate key \"" + key + "\"");
@@ -1184,7 +1193,8 @@ public class JSONObject {
 	 * @throws JSONException
 	 *             If the value is a non-finite number.
 	 */
-	public JSONObject putOpt(final String key, final Object value) throws JSONException {
+	public JSONObject putOpt(final String key, final Object value)
+			throws JSONException {
 		if (key != null && value != null) {
 			this.put(key, value);
 		}
@@ -1213,7 +1223,8 @@ public class JSONObject {
 		}
 	}
 
-	public static Writer quote(final String string, final Writer w) throws IOException {
+	public static Writer quote(final String string, final Writer w)
+			throws IOException {
 		if (string == null || string.length() == 0) {
 			w.write("\"\"");
 			return w;
@@ -1257,8 +1268,8 @@ public class JSONObject {
 				w.write("\\r");
 				break;
 			default:
-				if (c < ' ' || c >= '\u0080' && c < '\u00a0'
-						|| c >= '\u2000' && c < '\u2100') {
+				if (c < ' ' || c >= '\u0080' && c < '\u00a0' || c >= '\u2000'
+						&& c < '\u2100') {
 					w.write("\\u");
 					hhhh = Integer.toHexString(c);
 					w.write("0000", 0, 4 - hhhh.length());
@@ -1591,7 +1602,8 @@ public class JSONObject {
 
 	@SuppressWarnings("unchecked")
 	static final Writer writeValue(final Writer writer, final Object value,
-			final int indentFactor, final int indent) throws JSONException, IOException {
+			final int indentFactor, final int indent) throws JSONException,
+			IOException {
 		if (value == null || value.equals(null)) {
 			writer.write("null");
 		} else if (value instanceof JSONObject) {
@@ -1624,7 +1636,8 @@ public class JSONObject {
 		return writer;
 	}
 
-	static final void indent(final Writer writer, final int indent) throws IOException {
+	static final void indent(final Writer writer, final int indent)
+			throws IOException {
 		for (int i = 0; i < indent; i += 1) {
 			writer.write(' ');
 		}
@@ -1671,8 +1684,7 @@ public class JSONObject {
 					if (indentFactor > 0) {
 						writer.write(' ');
 					}
-					writeValue(writer, map.get(key), indentFactor,
-							newindent);
+					writeValue(writer, map.get(key), indentFactor, newindent);
 					commanate = true;
 				}
 				if (indentFactor > 0) {

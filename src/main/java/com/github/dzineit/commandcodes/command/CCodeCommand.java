@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import com.github.dzineit.commandcodes.CommandCodes;
 import com.github.dzineit.commandcodes.command.ccode.CCodeGenerateCommand;
@@ -57,7 +58,13 @@ public final class CCodeCommand implements CommandExecutor {
 			final CCodeSubCommand command = subCommands.get(args[0]);
 
 			if (command != null) {
-				command.execute(sender, args);
+				if (sender.hasPermission(command.getPermission())
+						|| sender instanceof ConsoleCommandSender) {
+					command.execute(sender, args);
+				} else {
+					sender.sendMessage(ChatColor.DARK_RED
+							+ "You don't have permission to do that!");
+				}
 			} else {
 				sender.sendMessage(ChatColor.DARK_RED
 						+ "That subcommand of /ccode doesn't exist! /ccode for help!");
@@ -81,6 +88,9 @@ public final class CCodeCommand implements CommandExecutor {
 
 		for (final CCodeSubCommand subCommand : subCommands.values()) {
 			if (stringList.contains(subCommand.getUsage())) {
+				continue;
+			}
+			if (!sender.hasPermission(subCommand.getPermission())) {
 				continue;
 			}
 

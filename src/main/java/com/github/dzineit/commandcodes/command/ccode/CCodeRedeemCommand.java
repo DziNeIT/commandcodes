@@ -26,41 +26,35 @@ public final class CCodeRedeemCommand extends CCodeSubCommand {
 	 */
 	@Override
 	public void execute(final CommandSender sender, final String[] args) {
-		if (!sender.hasPermission("commandcodes.redeem")) {
+		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.DARK_RED
-					+ "You don't have permission to do that!");
+					+ "Only players can redeem command codes!");
 		} else {
-			if (!(sender instanceof Player)) {
+			if (args.length == 1) {
 				sender.sendMessage(ChatColor.DARK_RED
-						+ "Only players can redeem command codes!");
+						+ "Invalid syntax, /ccode redeem <code>");
 			} else {
-				if (args.length == 1) {
+				int code;
+				try {
+					code = Integer.parseInt(args[1]);
+				} catch (final NumberFormatException e) {
+					code = 10000000;
 					sender.sendMessage(ChatColor.DARK_RED
-							+ "Invalid syntax, /ccode redeem <code>");
-				} else {
-					int code;
-					try {
-						code = Integer.parseInt(args[1]);
-					} catch (final NumberFormatException e) {
-						code = 10000000;
+							+ "Invalid code entered, /ccode redeem <code>");
+				}
+
+				final Player player = (Player) sender;
+
+				if (code != 10000000) {
+					// Redeems the code with the CodeManager
+					final CommandCode cc = codeMgr.redeemCode(
+							player.getUniqueId(), code);
+
+					if (cc == null) { // If they have already redeemed it
 						sender.sendMessage(ChatColor.DARK_RED
-								+ "Invalid code entered, /ccode redeem <code>");
-					}
-
-					final Player player = (Player) sender;
-
-					if (code != 10000000) {
-						// Redeems the code with the CodeManager
-						final CommandCode cc = codeMgr.redeemCode(
-								player.getUniqueId(), code);
-
-						if (cc == null) { // If they have already redeemed it
-							sender.sendMessage(ChatColor.DARK_RED
-									+ "Couldn't redeem command code!");
-						} else {
-							sender.sendMessage(ChatColor.GRAY
-									+ "Redeemed code!");
-						}
+								+ "Couldn't redeem command code!");
+					} else {
+						sender.sendMessage(ChatColor.GRAY + "Redeemed code!");
 					}
 				}
 			}
@@ -89,5 +83,13 @@ public final class CCodeRedeemCommand extends CCodeSubCommand {
 	@Override
 	public String getDescription() {
 		return "Redeems and activates the given code";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getPermission() {
+		return "commandcodes.redeem";
 	}
 }
