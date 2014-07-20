@@ -52,15 +52,17 @@ public final class CCodeCommand implements CommandExecutor {
 
 		// Register all the /ccode sub commands
 		helper.registerSubCommand("generate <command>",
-				"Generates a command code for the given command");
+				"Generates a code for the given command");
 		helper.registerSubCommand("remove <code>",
 				"Remove the given command code");
 		helper.registerSubCommand("redeem <code>",
-				"Redeems the given command code, executing the command it is associated with");
+				"Redeem / activate the given code");
 		helper.registerSubCommand("view [pageNo]",
-				"Views current command codes on the given page");
+				"See current command codes on the given page");
 		helper.registerSubCommand("previous [pageNo]",
-				"Views previous command codes on the given page");
+				"See previous command codes on the given page");
+		helper.registerSubCommand("show <code>",
+				"Shows details for the given code");
 	}
 
 	@Override

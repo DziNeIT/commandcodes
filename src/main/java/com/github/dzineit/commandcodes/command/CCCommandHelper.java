@@ -52,8 +52,4 @@ public final class CCCommandHelper {
 			sender.sendMessage(ChatColor.GRAY + information);
 		}
 	}
-
-	public void sendPluginInfo(final CommandSender sender) {
-		// TODO: Send plugin information to the given sender
-	}
 }

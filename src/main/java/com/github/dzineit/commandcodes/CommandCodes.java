@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.dzineit.commandcodes.code.CodeManager;
 import com.github.dzineit.commandcodes.command.CCCommandHelper;
 import com.github.dzineit.commandcodes.command.commands.CCodeCommand;
-import com.github.dzineit.commandcodes.command.commands.CommandCodesCommand;
 import com.github.dzineit.commandcodes.storage.FileManager;
 import com.github.dzineit.commandcodes.storage.StorageException;
 
@@ -53,10 +52,7 @@ public final class CommandCodes extends JavaPlugin {
 
 		// Register the plugin's commands
 		final CCodeCommand execMain = new CCodeCommand(this);
-		final CommandCodesCommand execInfo = new CommandCodesCommand(this);
-
 		getCommand("ccode").setExecutor(execMain);
-		getCommand("commandcodes").setExecutor(execInfo);
 	}
 
 	@Override
