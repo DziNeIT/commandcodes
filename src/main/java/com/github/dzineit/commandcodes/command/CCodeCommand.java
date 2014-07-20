@@ -1,6 +1,8 @@
 package com.github.dzineit.commandcodes.command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -52,7 +54,8 @@ public final class CCodeCommand implements CommandExecutor {
 		if (args.length == 0) {
 			sendCommandHelp(sender);
 		} else {
-			final CCodeSubCommand command = subCommands.get(cmd.getName());
+			final CCodeSubCommand command = subCommands.get(args[0]);
+
 			if (command != null) {
 				command.execute(sender, args);
 			} else {
@@ -64,6 +67,8 @@ public final class CCodeCommand implements CommandExecutor {
 		return true;
 	}
 
+	private final List<String> stringList = new ArrayList<>();
+
 	/**
 	 * Sends help to the given command sender, in the form of a list of commands
 	 * and a description of what each one does
@@ -72,10 +77,19 @@ public final class CCodeCommand implements CommandExecutor {
 	 *            The CommandSender object to send the help messages to
 	 */
 	public void sendCommandHelp(final CommandSender sender) {
+		stringList.clear();
+
 		for (final CCodeSubCommand subCommand : subCommands.values()) {
+			if (stringList.contains(subCommand.getUsage())) {
+				continue;
+			}
+
 			sender.sendMessage(ChatColor.GRAY + subCommand.getUsage() + " - "
 					+ subCommand.getDescription());
+			stringList.add(subCommand.getUsage());
 		}
+
+		stringList.clear();
 	}
 
 	/**
