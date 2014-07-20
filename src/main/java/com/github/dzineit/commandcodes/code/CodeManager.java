@@ -38,7 +38,7 @@ public class CodeManager {
 	/**
 	 * The cap on numbers generated for command codes
 	 */
-	private int codeCap = 9999;
+	private int codeCap = 99999;
 
 	/**
 	 * Creates a new CodeManager using the given code cap
@@ -50,7 +50,8 @@ public class CodeManager {
 		this.plugin = plugin;
 
 		// Get data from config
-		codeCap = plugin.getFileManager().getConfig().getInt("code-cap", 9999);
+		codeCap = plugin.getFileManager().getConfig()
+				.getInt("code-cap", codeCap);
 
 		currentCodes = new ArrayList<>();
 		oldCodes = new ArrayList<>();
