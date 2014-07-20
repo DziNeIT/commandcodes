@@ -263,6 +263,9 @@ public class CodeManager {
 		for (final CommandCode code : currentCodes) {
 			file.write(code.toJSONObject());
 		}
+		for (final CommandCode code : oldCodes) {
+			file.write(code.toJSONObject());
+		}
 		file.stopWriting();
 	}
 }
