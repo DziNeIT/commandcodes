@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.github.dzineit.commandcodes.CommandCodes;
@@ -41,6 +42,10 @@ public class CodeManager {
 	 * The cap on numbers generated for command codes
 	 */
 	private int codeCap = 99999;
+	/**
+	 * Whether the same player can redeem the same code multiple times
+	 */
+	private boolean multiRedemptions;
 
 	/**
 	 * Creates a new CodeManager using the given code cap
@@ -52,8 +57,9 @@ public class CodeManager {
 		this.plugin = plugin;
 
 		// Get data from config
-		codeCap = plugin.getFileManager().getConfig()
-				.getInt("code-cap", codeCap);
+		YamlConfiguration config = plugin.getFileManager().getConfig();
+		codeCap = config.getInt("code-cap", codeCap);
+		multiRedemptions = config.getBoolean("multiple-redemptions", false);
 
 		currentCodes = new ArrayList<>();
 		oldCodes = new ArrayList<>();
@@ -147,7 +153,7 @@ public class CodeManager {
 	public CommandCode redeemCode(final UUID redeemer, final int code) {
 		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
-				if (!cc.getRedeemers().contains(redeemer)) {
+				if (multiRedemptions || !cc.getRedeemers().contains(redeemer)) {
 					cc.addRedeemer(redeemer);
 					if (cc.isSpent()) {
 						currentCodes.remove(cc);
