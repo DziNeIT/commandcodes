@@ -124,15 +124,18 @@ public class CodeManager {
 	 * @return The command associated with the given code, or null if there
 	 *         isn't one
 	 */
-	public String redeemed(final UUID redeemer, final int code) {
+	public CommandCode redeemed(final UUID redeemer, final int code) {
 		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
-				cc.addRedeemer(redeemer);
-				if (cc.isSpent()) {
-					currentCodes.remove(cc);
-					oldCodes.add(cc);
+				if (!cc.getRedeemers().contains(redeemer)) {
+					cc.addRedeemer(redeemer);
+					if (cc.isSpent()) {
+						currentCodes.remove(cc);
+						oldCodes.add(cc);
+					}
+
+					return cc;
 				}
-				return cc.getCommand();
 			}
 		}
 		return null;

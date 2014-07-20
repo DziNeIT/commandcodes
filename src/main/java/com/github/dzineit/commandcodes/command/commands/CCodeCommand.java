@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import com.github.dzineit.commandcodes.CommandCodes;
 import com.github.dzineit.commandcodes.code.CodeManager;
@@ -18,6 +19,10 @@ import com.github.dzineit.commandcodes.command.CCCommandHelper;
  * codes
  */
 public final class CCodeCommand implements CommandExecutor {
+	/**
+	 * The CommandCodes plugin instance
+	 */
+	private final CommandCodes plugin;
 	/**
 	 * The plugin code manager
 	 */
@@ -35,6 +40,8 @@ public final class CCodeCommand implements CommandExecutor {
 	 *            for
 	 */
 	public CCodeCommand(final CommandCodes plugin) {
+		this.plugin = plugin;
+
 		// Get required objects from the provided plugin object
 		codeMgr = plugin.getCodeManager();
 		helper = plugin.getCommandHelper();
@@ -146,15 +153,48 @@ public final class CCodeCommand implements CommandExecutor {
 						}
 					}
 				} else if (sub.equals("redeem") || sub.equals("activate")) {
-					if (!(sender.hasPermission("commandcodes.redeem") || sender instanceof ConsoleCommandSender)) {
+					if (!sender.hasPermission("commandcodes.redeem")) {
 						sender.sendMessage(ChatColor.DARK_RED
 								+ "You don't have permission to do that!");
 					} else {
-						if (args.length == 1) {
+						if (!(sender instanceof Player)) {
 							sender.sendMessage(ChatColor.DARK_RED
-									+ "Invalid syntax, /ccode redeem <code>");
+									+ "Only players can redeem command codes!");
 						} else {
-							// TODO
+
+							if (args.length == 1) {
+								sender.sendMessage(ChatColor.DARK_RED
+										+ "Invalid syntax, /ccode redeem <code>");
+							} else {
+								int code;
+								try {
+									code = Integer.parseInt(args[1]);
+								} catch (NumberFormatException e) {
+									code = 10000000;
+									sender.sendMessage(ChatColor.DARK_RED
+											+ "Invalid code entered, /ccode redeem <code>");
+								}
+
+								final Player player = (Player) sender;
+
+								if (code != 10000000) {
+									// Redeems the code with the CodeManager
+									final CommandCode cc = codeMgr.redeemed(
+											player.getUniqueId(), code);
+
+									if (cc == null) { // If they have already redeemed it
+										sender.sendMessage(ChatColor.DARK_RED
+												+ "Couldn't redeem command code!");
+									} else {
+										// Dispatch the command as if player was OP
+										plugin.getServer().dispatchCommand(
+												player, cc.getCommand());
+										sender.sendMessage(ChatColor.GRAY
+												+ "Redeemed code!");
+									}
+								}
+							}
+
 						}
 					}
 				} else if (sub.equals("view") || sub.equals("see")) {
