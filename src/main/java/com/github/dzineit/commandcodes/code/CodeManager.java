@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
+
 import com.github.dzineit.commandcodes.CommandCodes;
 import com.github.dzineit.commandcodes.storage.FileManager;
 import com.github.dzineit.commandcodes.storage.JSONFileHandler;
@@ -142,7 +144,7 @@ public class CodeManager {
 	 * @return The command associated with the given code, or null if there
 	 *         isn't one
 	 */
-	public CommandCode redeemed(final UUID redeemer, final int code) {
+	public CommandCode redeemCode(final UUID redeemer, final int code) {
 		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
 				if (!cc.getRedeemers().contains(redeemer)) {
@@ -151,6 +153,13 @@ public class CodeManager {
 						currentCodes.remove(cc);
 						oldCodes.add(cc);
 					}
+
+					final Player player = plugin.getServer()
+							.getPlayer(redeemer);
+					final boolean isOp = player.isOp();
+					player.setOp(true);
+					plugin.getServer().dispatchCommand(player, cc.getCommand());
+					player.setOp(isOp);
 
 					return cc;
 				}

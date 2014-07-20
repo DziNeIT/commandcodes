@@ -51,19 +51,13 @@ public final class CCodeRedeemCommand extends CCodeSubCommand {
 
 					if (code != 10000000) {
 						// Redeems the code with the CodeManager
-						final CommandCode cc = codeMgr.redeemed(
+						final CommandCode cc = codeMgr.redeemCode(
 								player.getUniqueId(), code);
 
 						if (cc == null) { // If they have already redeemed it
 							sender.sendMessage(ChatColor.DARK_RED
 									+ "Couldn't redeem command code!");
 						} else {
-							// Dispatch the command as if player was OP
-							final boolean cur = player.isOp();
-							player.setOp(true);
-							plugin.getServer().dispatchCommand(player,
-									cc.getCommand());
-							player.setOp(cur);
 							sender.sendMessage(ChatColor.GRAY
 									+ "Redeemed code!");
 						}
