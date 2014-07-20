@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.dzineit.commandcodes.Util;
 import com.github.dzineit.commandcodes.storage.org.json.JSONObject;
+import com.github.dzineit.commandcodes.util.GeneralUtil;
 
 /**
  * Represents a single command code, which possesses a code, a command, an
@@ -97,7 +97,7 @@ public final class CommandCode {
 		json.put("spent", spent);
 
 		if (redeemers != null) {
-			json.put("redeemers", Util.uuidListToString(redeemers, "::"));
+			json.put("redeemers", GeneralUtil.uuidListToString(redeemers, "::"));
 		}
 
 		return json;
@@ -119,8 +119,8 @@ public final class CommandCode {
 
 		if (json.has("redeemers")) {
 			return new CommandCode(code, command, amount,
-					Util.uuidStringToList(json.getString("redeemers"), "::"),
-					spent);
+					GeneralUtil.uuidStringToList(json.getString("redeemers"),
+							"::"), spent);
 		} else {
 			return new CommandCode(code, command, amount);
 		}

@@ -1,14 +1,9 @@
 package com.github.dzineit.commandcodes;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.dzineit.commandcodes.code.CodeManager;
-import com.github.dzineit.commandcodes.command.CCCommandHelper;
-import com.github.dzineit.commandcodes.command.commands.CCodeCommand;
+import com.github.dzineit.commandcodes.command.CCodeCommand;
 import com.github.dzineit.commandcodes.storage.FileManager;
 import com.github.dzineit.commandcodes.storage.StorageException;
 
@@ -25,9 +20,10 @@ public final class CommandCodes extends JavaPlugin {
 	 */
 	private CodeManager codeManager;
 	/**
-	 * The CommandHelper object, containing helpful methods for command parsing
+	 * The base command object, containing helpful methods for command parsing
+	 * as well as acting as a base executor for the 'ccode' command
 	 */
-	private CCCommandHelper cmdHelper;
+	private CCodeCommand baseCommand;
 	/**
 	 * The FileManager object, which manages all of the files for the plugin
 	 */
@@ -43,24 +39,22 @@ public final class CommandCodes extends JavaPlugin {
 
 		try {
 			codeManager.loadCodes();
-		} catch (StorageException e) {
+		} catch (final StorageException e) {
 			e.printStackTrace();
 		}
 
-		// Create the command helper
-		cmdHelper = new CCCommandHelper(this);
-
 		// Register the plugin's commands
-		final CCodeCommand execMain = new CCodeCommand(this);
-		getCommand("ccode").setExecutor(execMain);
+		baseCommand = new CCodeCommand(this);
+		baseCommand.createSubCommands();
+		getCommand("ccode").setExecutor(baseCommand);
 	}
 
 	@Override
 	public void onDisable() {
-		// Save the command codes to a YML file
+		// Save the command codes to a JSON file
 		try {
 			codeManager.saveCodes();
-		} catch (StorageException e) {
+		} catch (final StorageException e) {
 			e.printStackTrace();
 		}
 	}
@@ -77,13 +71,14 @@ public final class CommandCodes extends JavaPlugin {
 	}
 
 	/**
-	 * Gets the CommandHelper object for the plugin, which contains helpful
-	 * utility methods for the handling of commands for CommandCodes
+	 * Gets the CCodeCommand object for the plugin, which contains helpful
+	 * utility methods for the handling of commands for CommandCodes as well as
+	 * acting as a base executor for the 'ccode' command
 	 * 
-	 * @return The plugin's CommandHelper object
+	 * @return The plugin's CCodeCommand object
 	 */
-	public CCCommandHelper getCommandHelper() {
-		return cmdHelper;
+	public CCodeCommand getBaseCommand() {
+		return baseCommand;
 	}
 
 	/**

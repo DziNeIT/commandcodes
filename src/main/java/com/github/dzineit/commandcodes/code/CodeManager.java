@@ -34,7 +34,7 @@ public class CodeManager {
 	/**
 	 * The instance of Random being used for code generation
 	 */
-	private Random random = new Random();
+	private final Random random = new Random();
 	/**
 	 * The cap on numbers generated for command codes
 	 */
@@ -254,7 +254,7 @@ public class CodeManager {
 		try {
 			// Create a blank file
 			file.create();
-		} catch (StorageException e) {
+		} catch (final StorageException e) {
 			file.restoreBackup();
 			throw new StorageException(e);
 		}

@@ -1,4 +1,4 @@
-package com.github.dzineit.commandcodes;
+package com.github.dzineit.commandcodes.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * General utility methods for CommandCodes
  */
-public final class Util {
+public final class GeneralUtil {
 	/**
 	 * Converts the given string list into a single string, with each list
 	 * element separated by the given separator in the string
@@ -52,6 +52,6 @@ public final class Util {
 		return result;
 	}
 
-	private Util() {
+	private GeneralUtil() {
 	}
 }

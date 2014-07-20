@@ -42,14 +42,14 @@ public final class FileManager {
 		if (!configFile.exists()) {
 			try {
 				configFile.createNewFile();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
 		if (!codeStorage.exists()) {
 			try {
 				codeStorage.createNewFile();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}

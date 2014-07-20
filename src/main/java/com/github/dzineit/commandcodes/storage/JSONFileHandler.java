@@ -16,7 +16,7 @@ public final class JSONFileHandler extends FileHandler {
 	 * @param file
 	 *            The File to write to / read from
 	 */
-	public JSONFileHandler(File file) {
+	public JSONFileHandler(final File file) {
 		super(file);
 	}
 

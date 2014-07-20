@@ -10,15 +10,15 @@ public class StorageException extends Exception {
 	public StorageException() {
 	}
 
-	public StorageException(String reason) {
+	public StorageException(final String reason) {
 		super(reason);
 	}
 
-	public StorageException(Throwable cause) {
+	public StorageException(final Throwable cause) {
 		super(cause);
 	}
 
-	public StorageException(String reason, Throwable cause) {
+	public StorageException(final String reason, final Throwable cause) {
 		super(reason, cause);
 	}
 }
