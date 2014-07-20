@@ -117,7 +117,32 @@ public final class CCodeCommand implements CommandExecutor {
 							sender.sendMessage(ChatColor.DARK_RED
 									+ "Invalid syntax, /ccode remove <code>");
 						} else {
-							// TODO
+							int code;
+							try {
+								code = Integer.parseInt(args[1]);
+							} catch (NumberFormatException e) {
+								code = 10000000;
+								sender.sendMessage(ChatColor.DARK_RED
+										+ "Invalid code entered, /ccode remove <code>");
+							}
+
+							if (code != 10000000) {
+								final CommandCode cc = codeMgr
+										.getCommandCode(code);
+
+								if (cc == null) {
+									sender.sendMessage(ChatColor.DARK_RED
+											+ "A command code with that code doesn't exist!");
+								} else {
+									if (codeMgr.removeCommandCode(cc)) {
+										sender.sendMessage(ChatColor.GRAY
+												+ "Successfully removed command code!");
+									} else {
+										sender.sendMessage(ChatColor.GRAY
+												+ "Couldn't remove command code!");
+									}
+								}
+							}
 						}
 					}
 				} else if (sub.equals("redeem") || sub.equals("activate")) {

@@ -2,6 +2,7 @@ package com.github.dzineit.commandcodes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * General utility methods for CommandCodes
@@ -11,7 +12,7 @@ public final class Util {
 	 * Converts the given string list into a single string, with each list
 	 * element separated by the given separator in the string
 	 * 
-	 * @param stringList
+	 * @param uuidList
 	 *            The list of strings to transform into a single string
 	 * @param separator
 	 *            The string to use in the created string to separate the
@@ -19,11 +20,11 @@ public final class Util {
 	 * @return A single string built from the elements in the given string list,
 	 *         with elements separated by the given separator
 	 */
-	public static final String listToString(final List<String> stringList,
+	public static final String uuidListToString(final List<UUID> uuidList,
 			final String separator) {
 		final StringBuilder builder = new StringBuilder();
-		for (final String curString : stringList) {
-			builder.append(curString).append(separator);
+		for (final UUID curUuid : uuidList) {
+			builder.append(curUuid.toString()).append(separator);
 		}
 		// Remove the last separator from the built string
 		builder.setLength(builder.length() - separator.length());
@@ -31,23 +32,22 @@ public final class Util {
 	}
 
 	/**
-	 * Converts the given string into a string list, with each section of the
-	 * array produced by splitting the string by the given separator counting as
-	 * an element in the list
+	 * Converts the given string into a UUID list, creating each UUID from each
+	 * section of the string split using the given separator
 	 * 
 	 * @param string
-	 *            The string to transform into a list
+	 *            The string of UUIDs to transform into a list
 	 * @param separator
-	 *            The string to use to separate the string into different
-	 *            elements to be put into a list
-	 * @return A list of strings built from the given string split into elements
+	 *            The string to use to separate the string into different UUIDs
+	 *            to be put into a list
+	 * @return A list of UUIDs built from the given string split into elements
 	 *         using the given separator
 	 */
-	public static final List<String> stringToList(final String string,
+	public static final List<UUID> uuidStringToList(final String string,
 			final String separator) {
-		final List<String> result = new ArrayList<>();
+		final List<UUID> result = new ArrayList<>();
 		for (final String cur : string.split(separator)) {
-			result.add(cur);
+			result.add(UUID.fromString(cur));
 		}
 		return result;
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import com.github.dzineit.commandcodes.CommandCodes;
 import com.github.dzineit.commandcodes.storage.FileManager;
@@ -95,6 +96,26 @@ public class CodeManager {
 	}
 
 	/**
+	 * Removes the given command code from the current code list, adding it to
+	 * the old codes list only if it has redeemers
+	 * 
+	 * @param code
+	 *            The CommandCode to remove from the current codes
+	 */
+	public boolean removeCommandCode(final CommandCode code) {
+		if (code == null) {
+			return false;
+		}
+
+		if (code.getRedeemers().size() > 0) {
+			currentCodes.remove(code);
+			return oldCodes.add(code);
+		} else {
+			return currentCodes.remove(code);
+		}
+	}
+
+	/**
 	 * Checks for the existence of the given code, returning it's command value
 	 * if it exists, or null otherwise, and adding the given redeemer to it
 	 * 
@@ -103,11 +124,11 @@ public class CodeManager {
 	 * @return The command associated with the given code, or null if there
 	 *         isn't one
 	 */
-	public String redeemed(final String redeemer, final int code) {
+	public String redeemed(final UUID redeemer, final int code) {
 		for (final CommandCode cc : currentCodes) {
 			if (cc.getCode() == code) {
 				cc.addRedeemer(redeemer);
-				if (cc.isUsed()) {
+				if (cc.isSpent()) {
 					currentCodes.remove(cc);
 					oldCodes.add(cc);
 				}
@@ -186,7 +207,7 @@ public class CodeManager {
 		while ((cur = file.read()) != null) {
 			final CommandCode cc = CommandCode.fromJSONObject(cur);
 
-			if (cc.isUsed()) {
+			if (cc.isSpent()) {
 				oldCodes.add(cc);
 			} else {
 				currentCodes.add(cc);
