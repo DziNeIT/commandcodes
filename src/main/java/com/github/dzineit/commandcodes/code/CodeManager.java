@@ -72,7 +72,7 @@ public class CodeManager {
 		do {
 			// Continually assign it a new value until its value isn't already taken
 			code = random.nextInt(codeCap);
-		} while (isInUse(code));
+		} while (hasBeenUsed(code));
 
 		final CommandCode commandCode = new CommandCode(code, command, amount);
 		currentCodes.add(commandCode);
@@ -160,14 +160,19 @@ public class CodeManager {
 	}
 
 	/**
-	 * Checks whether the given code is currently in use as a CommandCode
+	 * Checks whether the given code has already been used as a CommandCode
 	 * 
 	 * @param code
 	 *            The code to check for usage of
 	 * @return Whether the given code is currently being used
 	 */
-	public boolean isInUse(final int code) {
+	public boolean hasBeenUsed(final int code) {
 		for (final CommandCode cc : currentCodes) {
+			if (cc.getCode() == code) {
+				return true;
+			}
+		}
+		for (final CommandCode cc : oldCodes) {
 			if (cc.getCode() == code) {
 				return true;
 			}

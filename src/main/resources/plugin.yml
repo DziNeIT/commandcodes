@@ -10,8 +10,6 @@ description: Allows the generation of one-time-use codes for running a command w
 commands:
     ccode:
         aliases: [cc, ccc]
-    commandcodes:
-        description: Help and information for CommandCodes
 
 permissions:
     commandcodes.generate:
