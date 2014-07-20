@@ -48,8 +48,8 @@ public final class CommandUtil {
 			if (list.size() > cur) {
 				final CommandCode cc = list.get(cur);
 
-				sender.sendMessage(ChatColor.GOLD.toString() + cur + ": Code="
-						+ cc.getCode() + ", Command=" + cc.getCommand());
+				sender.sendMessage(ChatColor.GOLD.toString() + cc.getCode()
+						+ ":" + cc.getCommand());
 			}
 		}
 	}
