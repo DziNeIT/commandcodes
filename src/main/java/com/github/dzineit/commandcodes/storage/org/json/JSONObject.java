@@ -1488,7 +1488,8 @@ public class JSONObject {
      * @throws JSONException
      *             If the value is or contains an invalid number.
      */
-    public static String valueToString(Object value) throws JSONException {
+    @SuppressWarnings("unchecked")
+	public static String valueToString(Object value) throws JSONException {
         if (value == null || value.equals(null)) {
             return "null";
         }
@@ -1535,7 +1536,8 @@ public class JSONObject {
      *            The object to wrap
      * @return The wrapped value
      */
-    public static Object wrap(Object object) {
+    @SuppressWarnings("unchecked")
+	public static Object wrap(Object object) {
         try {
             if (object == null) {
                 return NULL;
@@ -1586,7 +1588,8 @@ public class JSONObject {
         return this.write(writer, 0, 0);
     }
 
-    static final Writer writeValue(Writer writer, Object value,
+    @SuppressWarnings("unchecked")
+	static final Writer writeValue(Writer writer, Object value,
             int indentFactor, int indent) throws JSONException, IOException {
         if (value == null || value.equals(null)) {
             writer.write("null");

@@ -1,5 +1,6 @@
 package com.github.dzineit.commandcodes.code;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public final class CommandCode {
 		this.command = command;
 		this.amount = amount;
 
-		redeemers = null;
+		redeemers = new ArrayList<>();
 		spent = false;
 	}
 
@@ -73,6 +74,10 @@ public final class CommandCode {
 
 	public void addRedeemer(final UUID redeemer) {
 		redeemers.add(redeemer);
+
+		if (amount - redeemers.size() <= 0) {
+			spent = true;
+		}
 	}
 
 	public boolean isSpent() {

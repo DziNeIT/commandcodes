@@ -190,8 +190,11 @@ public final class CCodeCommand implements CommandExecutor {
 												+ "Couldn't redeem command code!");
 									} else {
 										// Dispatch the command as if player was OP
+										boolean cur = player.isOp();
+										player.setOp(true);
 										plugin.getServer().dispatchCommand(
 												player, cc.getCommand());
+										player.setOp(cur);
 										sender.sendMessage(ChatColor.GRAY
 												+ "Redeemed code!");
 									}
@@ -285,12 +288,12 @@ public final class CCodeCommand implements CommandExecutor {
 		final int end = start + 7;
 
 		for (int cur = start; cur < end; cur++) {
-			final CommandCode cc = list.get(cur);
-			final StringBuilder builder = new StringBuilder();
+			if (list.size() > cur) {
+				final CommandCode cc = list.get(cur);
 
-			sender.sendMessage(builder.append(ChatColor.GOLD).append(cur)
-					.append(": Code=").append(cc.getCode())
-					.append(", Command=").toString());
+				sender.sendMessage(ChatColor.GOLD.toString() + cur + ": Code="
+						+ cc.getCode() + ", Command=" + cc.getCommand());
+			}
 		}
 
 		return true;
@@ -298,15 +301,13 @@ public final class CCodeCommand implements CommandExecutor {
 
 	private boolean showCommandCodeData(final CommandSender sender,
 			final CommandCode cc) {
-		final StringBuilder builder = new StringBuilder();
-
-		sender.sendMessage(builder.append(ChatColor.GOLD).append(": Code=")
-				.append(cc.getCode()).append(", Command=")
-				.append(cc.getCommand()).append(", Uses=")
-				.append(cc.getAmount()).append(", Remaining=")
-				.append(cc.getAmount() - cc.getRedeemers().size())
-				.append(", Redeemers=")
-				.append(getPlayersStr(cc.getRedeemers())).toString());
+		sender.sendMessage(ChatColor.GOLD + "Code: " + cc.getCode());
+		sender.sendMessage(ChatColor.GOLD + "Command: " + cc.getCommand());
+		sender.sendMessage(ChatColor.GOLD + "Uses: " + cc.getAmount());
+		sender.sendMessage(ChatColor.GOLD + "Remaining: "
+				+ (cc.getAmount() - cc.getRedeemers().size()));
+		sender.sendMessage(ChatColor.GOLD + "Redeemers: "
+				+ getPlayersStr(cc.getRedeemers()));
 
 		return true;
 	}
