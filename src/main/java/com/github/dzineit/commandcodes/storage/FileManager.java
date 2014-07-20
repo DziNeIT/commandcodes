@@ -1,6 +1,7 @@
 package com.github.dzineit.commandcodes.storage;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -29,9 +30,29 @@ public final class FileManager {
 	public FileManager(final CommandCodes plugin) {
 		this.plugin = plugin;
 
+		final File dataFolder = plugin.getDataFolder();
+
 		// Create file objects
 		configFile = getFile("config.yml");
 		codeStorage = getFile("curcodes.json");
+
+		if (!dataFolder.exists()) {
+			dataFolder.mkdirs();
+		}
+		if (!configFile.exists()) {
+			try {
+				configFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (!codeStorage.exists()) {
+			try {
+				codeStorage.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		// Create configuration / data objects
 		config = YamlConfiguration.loadConfiguration(configFile);

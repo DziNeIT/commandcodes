@@ -36,29 +36,6 @@ public final class CommandCodes extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// Create the objects for the config and codes storage files
-		final File configFile = new File(getDataFolder(), "config.yml");
-		final File codesFile = new File(getDataFolder(), "codes.yml");
-
-		// Make sure all files and directories exist
-		if (!getDataFolder().exists()) {
-			getDataFolder().mkdirs();
-		}
-		if (!configFile.exists()) {
-			try {
-				configFile.createNewFile();
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (!codesFile.exists()) {
-			try {
-				codesFile.createNewFile();
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-		}
-
 		// Load files / config
 		fileManager = new FileManager(this);
 
