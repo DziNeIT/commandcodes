@@ -161,7 +161,6 @@ public final class CCodeCommand implements CommandExecutor {
 							sender.sendMessage(ChatColor.DARK_RED
 									+ "Only players can redeem command codes!");
 						} else {
-
 							if (args.length == 1) {
 								sender.sendMessage(ChatColor.DARK_RED
 										+ "Invalid syntax, /ccode redeem <code>");
