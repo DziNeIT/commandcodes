@@ -3,7 +3,7 @@ author: DziNeIT
 
 version: 1.0
 database: false
-main: com.github.dzineit.commandcodes.CommandCodes
+main: pw.ollie.commandcodes.CommandCodes
 
 description: Allows the generation of one-time-use codes for running a command which the user may not be able to normally execute
 
