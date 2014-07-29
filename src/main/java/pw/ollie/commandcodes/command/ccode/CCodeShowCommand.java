@@ -53,9 +53,9 @@ public final class CCodeShowCommand extends CCodeSubCommand {
 					sender.sendMessage(ChatColor.GOLD + "Command: "
 							+ cc.getCommand());
 					sender.sendMessage(ChatColor.GOLD + "Uses: "
-							+ cc.getAmount());
+							+ cc.getTimesUsable());
 					sender.sendMessage(ChatColor.GOLD + "Remaining: "
-							+ (cc.getAmount() - cc.getRedeemers().size()));
+							+ (cc.getTimesUsable() - cc.getRedeemers().size()));
 					sender.sendMessage(ChatColor.GOLD + "Redeemers: "
 							+ CommandUtil.getPlayersStr(cc.getRedeemers()));
 				}

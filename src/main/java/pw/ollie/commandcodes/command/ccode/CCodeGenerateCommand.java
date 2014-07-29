@@ -67,7 +67,9 @@ public final class CCodeGenerateCommand extends CCodeSubCommand {
 				sender.sendMessage(ChatColor.GOLD
 						+ "Codes created for command: '" + command + "'");
 				for (final CommandCode code : codes) {
-					sender.sendMessage(ChatColor.GRAY + "");
+					sender.sendMessage(ChatColor.GRAY + "Code: "
+							+ code.getCode() + ", Usable: "
+							+ code.getTimesUsable() + " times");
 				}
 			}
 		}
@@ -86,7 +88,7 @@ public final class CCodeGenerateCommand extends CCodeSubCommand {
 	 */
 	@Override
 	public String getUsage() {
-		return "/ccode generate <amount> <command>";
+		return "/ccode generate <amount> <timesUsable> <command>";
 	}
 
 	/**

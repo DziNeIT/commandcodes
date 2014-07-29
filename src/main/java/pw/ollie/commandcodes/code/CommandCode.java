@@ -23,7 +23,7 @@ public final class CommandCode {
 	/**
 	 * The amount of times this code is redeemable
 	 */
-	private final int amount;
+	private final int timesUsable;
 
 	/**
 	 * Whether the command code is spent (this is true if it isn't a currently
@@ -38,7 +38,7 @@ public final class CommandCode {
 	public CommandCode(final int code, final String command, final int amount) {
 		this.code = code;
 		this.command = command;
-		this.amount = amount;
+		this.timesUsable = amount;
 
 		redeemers = new ArrayList<>();
 		spent = false;
@@ -60,8 +60,8 @@ public final class CommandCode {
 		return command;
 	}
 
-	public int getAmount() {
-		return amount;
+	public int getTimesUsable() {
+		return timesUsable;
 	}
 
 	public List<UUID> getRedeemers() {
@@ -75,7 +75,7 @@ public final class CommandCode {
 	public void addRedeemer(final UUID redeemer) {
 		redeemers.add(redeemer);
 
-		if (amount - redeemers.size() <= 0) {
+		if (timesUsable - redeemers.size() <= 0) {
 			spent = true;
 		}
 	}
@@ -93,7 +93,7 @@ public final class CommandCode {
 		final JSONObject json = new JSONObject();
 		json.put("code", code);
 		json.put("command", command);
-		json.put("amount", amount);
+		json.put("amount", timesUsable);
 		json.put("spent", spent);
 
 		if (redeemers != null) {
