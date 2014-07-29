@@ -29,44 +29,45 @@ public final class CCodeGenerateCommand extends CCodeSubCommand {
 	 */
 	@Override
 	public void execute(final CommandSender sender, final String[] args) {
-		if (args.length < 3) {
+		if (args.length < 4) {
 			sender.sendMessage(ChatColor.DARK_RED
-					+ "Invalid syntax, /ccode generate <amount> <command>");
+					+ "Invalid syntax, /ccode generate <amount> <timesUsable> <command>");
 		} else {
-			boolean ia = false; // Invalid amount
+			boolean invalid = false;
 			int amount = -1;
+			int timesUsable = -1;
 
 			try {
 				amount = Integer.parseInt(args[1]);
+				timesUsable = Integer.parseInt(args[2]);
 			} catch (final NumberFormatException e) {
-				ia = true;
+				invalid = true;
 			}
 
-			if (amount < 1) {
-				ia = true;
+			if (amount < 1 || timesUsable < 1) {
+				invalid = true;
 			}
 
-			if (ia) {
+			if (invalid) {
 				sender.sendMessage(ChatColor.DARK_RED
-						+ "Invalid amount entered, /ccode generate <amount> <command>");
+						+ "Invalid arguments (amount and times usable must be at least 1!)");
 			} else {
 				final StringBuilder builder = new StringBuilder();
-				for (int cur = 2; cur < args.length; cur++) {
+				for (int cur = 3; cur < args.length; cur++) {
 					builder.append(args[cur]).append(" ");
 				}
+				builder.setLength(builder.length() - 1);
+				final String command = builder.toString();
 
-				final CommandCode code = codeMgr.generateCode(
-						builder.toString(), amount);
+				final CommandCode[] codes = new CommandCode[amount];
+				for (int i = 0; i < codes.length; i++) {
+					codes[i] = codeMgr.generateCode(command, timesUsable);
+				}
 
-				if (code != null) {
-					sender.sendMessage(ChatColor.GRAY
-							+ "Successfully created command code which can be used "
-							+ code.getAmount()
-							+ " times, linked to the command: '"
-							+ code.getCommand() + "'");
-				} else {
-					sender.sendMessage(ChatColor.DARK_RED
-							+ "Failed to create code!");
+				sender.sendMessage(ChatColor.GOLD
+						+ "Codes created for command: '" + command + "'");
+				for (final CommandCode code : codes) {
+					sender.sendMessage(ChatColor.GRAY + "");
 				}
 			}
 		}

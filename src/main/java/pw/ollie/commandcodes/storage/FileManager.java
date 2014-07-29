@@ -40,11 +40,7 @@ public final class FileManager {
 			dataFolder.mkdirs();
 		}
 		if (!configFile.exists()) {
-			try {
-				configFile.createNewFile();
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
+			plugin.saveResource("config.yml", false);
 		}
 		if (!codeStorage.exists()) {
 			try {
