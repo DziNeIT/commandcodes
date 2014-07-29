@@ -156,6 +156,13 @@ public abstract class FileHandler {
 	 *             If the file cannot be deleted
 	 */
 	public void delete() throws IllegalStateException, StorageException {
+		if (reader != null) {
+			stopReading();
+		}
+		if (writer != null) {
+			stopWriting();
+		}
+
 		if (file == null || !file.exists()) {
 			throw new IllegalStateException("File is null or does not exist!");
 		} else if (!file.delete()) {

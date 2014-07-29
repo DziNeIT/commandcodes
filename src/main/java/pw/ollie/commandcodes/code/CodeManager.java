@@ -280,13 +280,18 @@ public class CodeManager {
 			throw new StorageException(e);
 		}
 
-		file.startWriting();
-		for (final CommandCode code : currentCodes) {
-			file.write(code.toJSONObject());
+		try {
+			file.startWriting();
+			for (final CommandCode code : currentCodes) {
+				file.write(code.toJSONObject());
+			}
+			for (final CommandCode code : oldCodes) {
+				file.write(code.toJSONObject());
+			}
+			file.stopWriting();
+		} catch (final StorageException e) {
+			file.restoreBackup();
+			throw new StorageException(e);
 		}
-		for (final CommandCode code : oldCodes) {
-			file.write(code.toJSONObject());
-		}
-		file.stopWriting();
 	}
 }
