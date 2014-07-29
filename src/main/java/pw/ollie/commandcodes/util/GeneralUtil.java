@@ -26,8 +26,10 @@ public final class GeneralUtil {
 		for (final UUID curUuid : uuidList) {
 			builder.append(curUuid.toString()).append(separator);
 		}
-		// Remove the last separator from the built string
-		builder.setLength(builder.length() - separator.length());
+		if (builder.length() > 0) {
+			// Remove the last separator from the built string
+			builder.setLength(builder.length() - separator.length());
+		}
 		return builder.toString();
 	}
 
