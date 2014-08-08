@@ -5,20 +5,20 @@ package pw.ollie.commandcodes.storage;
  * them
  */
 public class StorageException extends Exception {
-	private static final long serialVersionUID = 5951441031564234865L;
+    private static final long serialVersionUID = 5951441031564234865L;
 
-	public StorageException() {
-	}
+    public StorageException() {
+    }
 
-	public StorageException(final String reason) {
-		super(reason);
-	}
+    public StorageException(final String reason) {
+        super(reason);
+    }
 
-	public StorageException(final Throwable cause) {
-		super(cause);
-	}
+    public StorageException(final Throwable cause) {
+        super(cause);
+    }
 
-	public StorageException(final String reason, final Throwable cause) {
-		super(reason, cause);
-	}
+    public StorageException(final String reason, final Throwable cause) {
+        super(reason, cause);
+    }
 }
