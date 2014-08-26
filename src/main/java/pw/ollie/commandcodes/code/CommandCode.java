@@ -15,7 +15,7 @@ public final class CommandCode {
     /**
      * The integer code which represents this command code
      */
-    private final int code;
+    private final String code;
     /**
      * The command executed when this command code is used
      */
@@ -35,7 +35,7 @@ public final class CommandCode {
      */
     private List<UUID> redeemers;
 
-    public CommandCode(final int code, final String command, final int amount) {
+    public CommandCode(final String code, final String command, final int amount) {
         this.code = code;
         this.command = command;
         timesUsable = amount;
@@ -44,7 +44,7 @@ public final class CommandCode {
         spent = false;
     }
 
-    public CommandCode(final int code, final String command, final int amount,
+    public CommandCode(final String code, final String command, final int amount,
             final List<UUID> redeemers, final boolean spent) {
         this(code, command, amount);
 
@@ -52,7 +52,7 @@ public final class CommandCode {
         this.spent = spent;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -112,7 +112,7 @@ public final class CommandCode {
      *         JSONObject
      */
     public static CommandCode fromJSONObject(final JSONObject json) {
-        final int code = json.getInt("code");
+        final String code = json.getString("code");
         final String command = json.getString("command");
         final int amount = json.getInt("amount");
         final boolean spent = json.getBoolean("spent");

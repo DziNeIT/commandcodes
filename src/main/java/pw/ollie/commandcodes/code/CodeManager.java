@@ -41,7 +41,7 @@ public class CodeManager {
     /**
      * The cap on numbers generated for command codes
      */
-    private int codeCap = 99999;
+    private int maxCharacters = 6;
     /**
      * Whether the same player can redeem the same code multiple times
      */
@@ -58,7 +58,7 @@ public class CodeManager {
 
         // Get data from config
         final YamlConfiguration config = plugin.getFileManager().getConfig();
-        codeCap = config.getInt("code-cap", codeCap);
+        maxCharacters = config.getInt("max-code-characters", maxCharacters);
         multiRedemptions = config.getBoolean("multiple-redemptions", false);
 
         currentCodes = new ArrayList<>();
@@ -76,11 +76,11 @@ public class CodeManager {
      * @return A CommandCode generated for the given command
      */
     public CommandCode generateCode(final String command, final int amount) {
-        int code;
+        String code;
         do {
             // Continually assign it a new value until its value isn't already
-// taken
-            code = random.nextInt(codeCap);
+            // taken
+            code = generateRandomString();
         } while (hasBeenUsed(code));
 
         final CommandCode commandCode = new CommandCode(code, command, amount);
@@ -96,9 +96,9 @@ public class CodeManager {
      *            The code to get the CommandCode for
      * @return The CommandCode associated with the given code
      */
-    public CommandCode getCurrentCommandCode(final int code) {
+    public CommandCode getCurrentCommandCode(final String code) {
         for (final CommandCode cc : currentCodes) {
-            if (cc.getCode() == code) {
+            if (cc.getCode().equalsIgnoreCase(code)) {
                 return cc;
             }
         }
@@ -113,9 +113,9 @@ public class CodeManager {
      *            The code to get the CommandCode for
      * @return The CommandCode associated with the given code
      */
-    public CommandCode getSpentCommandCode(final int code) {
+    public CommandCode getSpentCommandCode(final String code) {
         for (final CommandCode cc : oldCodes) {
-            if (cc.getCode() == code) {
+            if (cc.getCode().equalsIgnoreCase(code)) {
                 return cc;
             }
         }
@@ -151,9 +151,9 @@ public class CodeManager {
      * @return The command associated with the given code, or null if there
      *         isn't one
      */
-    public CommandCode redeemCode(final UUID redeemer, final int code) {
+    public CommandCode redeemCode(final UUID redeemer, final String code) {
         for (final CommandCode cc : currentCodes) {
-            if (cc.getCode() == code) {
+            if (cc.getCode().equalsIgnoreCase(code)) {
                 if (multiRedemptions || !cc.getRedeemers().contains(redeemer)) {
                     cc.addRedeemer(redeemer);
                     if (cc.isSpent()) {
@@ -182,14 +182,14 @@ public class CodeManager {
      *            The code to check for usage of
      * @return Whether the given code is currently being used
      */
-    public boolean hasBeenUsed(final int code) {
+    public boolean hasBeenUsed(final String code) {
         for (final CommandCode cc : currentCodes) {
-            if (cc.getCode() == code) {
+            if (cc.getCode().equalsIgnoreCase(code)) {
                 return true;
             }
         }
         for (final CommandCode cc : oldCodes) {
-            if (cc.getCode() == code) {
+            if (cc.getCode().equalsIgnoreCase(code)) {
                 return true;
             }
         }
@@ -215,22 +215,35 @@ public class CodeManager {
     }
 
     /**
-     * Gets the current cap for generated command code numbers
+     * Gets the current max characters for generated command codes
      * 
-     * @return The current command code number cap
+     * @return The current command code max characters cap
      */
-    public int getCodeCap() {
-        return codeCap;
+    public int getMaxCharacters() {
+        return maxCharacters;
     }
 
     /**
-     * Sets a new cap for generated command code numbers
+     * Sets a new max characters for generated command codes
      * 
      * @param codeCap
-     *            The new cap for generated command code numbers
+     *            The new max characters for generated command codes
      */
-    public void setCodeCap(final int codeCap) {
-        this.codeCap = codeCap;
+    public void setMaxCharacters(final int maxCharacters) {
+        this.maxCharacters = maxCharacters;
+    }
+
+    /**
+     * Generates a random string
+     * 
+     * @return A random string of letters and numbers
+     */
+    private String generateRandomString() {
+        final char[] chars = new char[maxCharacters];
+        for (int idx = 0; idx < chars.length; ++idx) {
+            chars[idx] = characters[r.nextInt(characters.length)];
+        }
+        return new String(chars);
     }
 
     /**
@@ -294,5 +307,19 @@ public class CodeManager {
             file.restoreBackup();
             throw new StorageException(e);
         }
+    }
+
+    private static final Random r = new Random();
+    private static final char[] characters;
+
+    static {
+        final StringBuilder sb = new StringBuilder();
+        for (char c = '0'; c <= '9'; ++c) {
+            sb.append(c);
+        }
+        for (char c = 'a'; c <= 'z'; ++c) {
+            sb.append(c);
+        }
+        characters = sb.toString().toCharArray();
     }
 }

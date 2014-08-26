@@ -34,28 +34,15 @@ public final class CCodeRedeemCommand extends CCodeSubCommand {
                 sender.sendMessage(ChatColor.DARK_RED
                         + "Invalid syntax, /ccode redeem <code>");
             } else {
-                int code;
-                try {
-                    code = Integer.parseInt(args[1]);
-                } catch (final NumberFormatException e) {
-                    code = 10000000;
-                    sender.sendMessage(ChatColor.DARK_RED
-                            + "Invalid code entered, /ccode redeem <code>");
-                }
-
+                final String code = args[1];
                 final Player player = (Player) sender;
 
-                if (code != 10000000) {
-                    // Redeems the code with the CodeManager
-                    final CommandCode cc = codeMgr.redeemCode(
-                            player.getUniqueId(), code);
-
-                    if (cc == null) { // If they have already redeemed it
-                        sender.sendMessage(ChatColor.DARK_RED
-                                + "Couldn't redeem command code!");
-                    } else {
-                        sender.sendMessage(ChatColor.GRAY + "Redeemed code!");
-                    }
+                // Redeems the code with the CodeManager
+                final CommandCode cc = codeMgr.redeemCode(player.getUniqueId(), code);
+                if (cc == null) { // If they have already redeemed it
+                    sender.sendMessage(ChatColor.DARK_RED + "Couldn't redeem command code!");
+                } else {
+                    sender.sendMessage(ChatColor.GRAY + "Redeemed code!");
                 }
             }
         }

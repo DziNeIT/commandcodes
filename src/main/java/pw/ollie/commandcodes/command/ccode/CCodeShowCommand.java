@@ -30,35 +30,21 @@ public final class CCodeShowCommand extends CCodeSubCommand {
             sender.sendMessage(ChatColor.DARK_RED
                     + "Invalid syntax, /ccode show <code>");
         } else {
-            int code;
-            try {
-                code = Integer.parseInt(args[1]);
-            } catch (final NumberFormatException e) {
-                sender.sendMessage(ChatColor.DARK_RED
-                        + "Invalid code number, /ccode show <code>");
-                code = 1000000;
+            final String code = args[1];
+
+            CommandCode cc = codeMgr.getCurrentCommandCode(code);
+            if (cc == null) {
+                cc = codeMgr.getSpentCommandCode(code);
             }
 
-            if (code != 1000000) {
-                CommandCode cc = codeMgr.getCurrentCommandCode(code);
-                if (cc == null) {
-                    cc = codeMgr.getSpentCommandCode(code);
-                }
-
-                if (cc == null) {
-                    sender.sendMessage(ChatColor.DARK_RED
-                            + "That code doesn't exist!");
-                } else {
-                    sender.sendMessage(ChatColor.GOLD + "Code: " + cc.getCode());
-                    sender.sendMessage(ChatColor.GOLD + "Command: "
-                            + cc.getCommand());
-                    sender.sendMessage(ChatColor.GOLD + "Uses: "
-                            + cc.getTimesUsable());
-                    sender.sendMessage(ChatColor.GOLD + "Remaining: "
-                            + (cc.getTimesUsable() - cc.getRedeemers().size()));
-                    sender.sendMessage(ChatColor.GOLD + "Redeemers: "
-                            + CommandUtil.getPlayersStr(cc.getRedeemers()));
-                }
+            if (cc == null) {
+                sender.sendMessage(ChatColor.DARK_RED + "That code doesn't exist!");
+            } else {
+                sender.sendMessage(ChatColor.GOLD + "Code: " + cc.getCode());
+                sender.sendMessage(ChatColor.GOLD + "Command: " + cc.getCommand());
+                sender.sendMessage(ChatColor.GOLD + "Uses: " + cc.getTimesUsable());
+                sender.sendMessage(ChatColor.GOLD + "Remaining: " + (cc.getTimesUsable() - cc.getRedeemers().size()));
+                sender.sendMessage(ChatColor.GOLD + "Redeemers: " + CommandUtil.getPlayersStr(cc.getRedeemers()));
             }
         }
     }
