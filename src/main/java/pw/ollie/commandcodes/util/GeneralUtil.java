@@ -48,7 +48,15 @@ public final class GeneralUtil {
     public static final List<UUID> uuidStringToList(final String string,
             final String separator) {
         final List<UUID> result = new ArrayList<>();
-        for (final String cur : string.split(separator)) {
+        if (!string.contains(separator) && string.length() != 0) {
+            result.add(UUID.fromString(string));
+            return result;
+        }
+        final String[] split = string.split(separator);
+        if (split == null || split.length == 0) {
+            return result;
+        }
+        for (final String cur : split) {
             result.add(UUID.fromString(cur));
         }
         return result;
