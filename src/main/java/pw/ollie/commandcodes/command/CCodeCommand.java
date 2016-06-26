@@ -37,18 +37,6 @@ public final class CCodeCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    /**
-     * Registers the given subcommand and all of it's aliases to this command
-     * 
-     * @param subCommand
-     *            The subcommand to register
-     */
-    public void registerSubCommand(final CCodeSubCommand subCommand) {
-        for (final String name : subCommand.getNames()) {
-            subCommands.put(name.toLowerCase(), subCommand);
-        }
-    }
-
     @Override
     public boolean onCommand(final CommandSender sender, final Command cmd,
             final String label, final String[] args) {
@@ -74,8 +62,6 @@ public final class CCodeCommand implements CommandExecutor {
         return true;
     }
 
-    private final List<String> stringList = new ArrayList<>();
-
     /**
      * Sends help to the given command sender, in the form of a list of commands
      * and a description of what each one does
@@ -84,22 +70,26 @@ public final class CCodeCommand implements CommandExecutor {
      *            The CommandSender object to send the help messages to
      */
     public void sendCommandHelp(final CommandSender sender) {
-        stringList.clear();
-
         for (final CCodeSubCommand subCommand : subCommands.values()) {
-            if (stringList.contains(subCommand.getUsage())) {
-                continue;
-            }
             if (!sender.hasPermission(subCommand.getPermission())) {
                 continue;
             }
 
             sender.sendMessage(ChatColor.GRAY + subCommand.getUsage() + " - "
                     + subCommand.getDescription());
-            stringList.add(subCommand.getUsage());
         }
+    }
 
-        stringList.clear();
+    /**
+     * Registers the given subcommand and all of it's aliases to this command
+     * 
+     * @param subCommand
+     *            The subcommand to register
+     */
+    private void registerSubCommand(final CCodeSubCommand subCommand) {
+        for (final String name : subCommand.getNames()) {
+            subCommands.put(name.toLowerCase(), subCommand);
+        }
     }
 
     /**
@@ -107,11 +97,11 @@ public final class CCodeCommand implements CommandExecutor {
      * automatically registered in the CCodeSubCommand constructor
      */
     public void createSubCommands() {
-        new CCodeGenerateCommand(plugin);
-        new CCodePreviousCommand(plugin);
-        new CCodeRedeemCommand(plugin);
-        new CCodeRemoveCommand(plugin);
-        new CCodeShowCommand(plugin);
-        new CCodeViewCommand(plugin);
+        this.registerSubCommand(new CCodeGenerateCommand(plugin));
+        this.registerSubCommand(new CCodePreviousCommand(plugin));
+        this.registerSubCommand(new CCodeRedeemCommand(plugin));
+        this.registerSubCommand(new CCodeRemoveCommand(plugin));
+        this.registerSubCommand(new CCodeShowCommand(plugin));
+        this.registerSubCommand(new CCodeViewCommand(plugin));
     }
 }

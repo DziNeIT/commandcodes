@@ -12,8 +12,6 @@ public abstract class CCodeSubCommand {
 
     public CCodeSubCommand(final CommandCodes plugin) {
         this.plugin = plugin;
-
-        plugin.getBaseCommand().registerSubCommand(this);
     }
 
     /**

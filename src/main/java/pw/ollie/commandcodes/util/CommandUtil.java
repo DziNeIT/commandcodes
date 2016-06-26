@@ -31,9 +31,9 @@ public final class CommandUtil {
                 return;
             }
 
-            if (pageNo > pages) {
+            if (pageNo > pages || pageNo < 1) {
                 sender.sendMessage(ChatColor.DARK_RED
-                        + "There aren't that many pages!");
+                        + "That page number is invalid!");
                 return;
             }
         }
